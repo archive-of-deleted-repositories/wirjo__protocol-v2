@@ -5,17 +5,32 @@ module.exports = {
     {
       secretKey:
         "***REMOVED***",
-      balance: toWad(1_000_000),
+      balance: toWad("1000000"),
     },
     {
       secretKey:
         "***REMOVED***",
-      balance: toWad(1_000_000),
+      balance: toWad("1000000"),
     },
     {
       secretKey:
         "***REMOVED***",
-      balance: toWad(1_000_000),
+      balance: toWad("1000000"),
+    },
+    {
+      secretKey:
+        "***REMOVED***",
+      balance: toWad("1000000"),
+    },
+    {
+      secretKey:
+        "***REMOVED***",
+      balance: toWad("1000000"),
+    },
+    {
+      secretKey:
+        "***REMOVED***",
+      balance: toWad("1000000"),
     },
   ],
 };
