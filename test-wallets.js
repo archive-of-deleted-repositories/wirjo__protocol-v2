@@ -1,38 +1,38 @@
-const toWad = require('./helpers/misc-utils').toWad;
+const balance = '1000000000000000000000000';
 
 module.exports = {
   accounts: [
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
     {
       secretKey: '***REMOVED***',
-      balance: toWad('1000000'),
+      balance,
     },
   ],
 };
