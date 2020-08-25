@@ -2,26 +2,23 @@
 /* tslint:disable */
 
 import {ethers, EventFilter, Signer, BigNumber, BigNumberish, PopulatedTransaction} from 'ethers';
-import {
-  Contract,
-  ContractTransaction,
-  Overrides,
-  PayableOverrides,
-  CallOverrides,
-} from '@ethersproject/contracts';
+import {Contract, ContractTransaction, Overrides, CallOverrides} from '@ethersproject/contracts';
 import {BytesLike} from '@ethersproject/bytes';
 import {Listener, Provider} from '@ethersproject/providers';
 import {FunctionFragment, EventFragment, Result} from '@ethersproject/abi';
 
 interface LendingPoolInterface extends ethers.utils.Interface {
   functions: {
+    'FLASHLOAN_FEE_TOTAL()': FunctionFragment;
     'LENDINGPOOL_REVISION()': FunctionFragment;
+    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()': FunctionFragment;
+    'REBALANCE_DOWN_RATE_DELTA()': FunctionFragment;
     'UINT_MAX_VALUE()': FunctionFragment;
-    'addressesProvider()': FunctionFragment;
     'balanceDecreaseAllowed(address,address,uint256)': FunctionFragment;
     'borrow(address,uint256,uint256,uint16)': FunctionFragment;
     'deposit(address,uint256,uint16)': FunctionFragment;
     'flashLoan(address,address,uint256,bytes)': FunctionFragment;
+    'getAddressesProvider()': FunctionFragment;
     'getConfiguration(address)': FunctionFragment;
     'getReserveConfigurationData(address)': FunctionFragment;
     'getReserveData(address)': FunctionFragment;
@@ -29,6 +26,7 @@ interface LendingPoolInterface extends ethers.utils.Interface {
     'getReserveNormalizedVariableDebt(address)': FunctionFragment;
     'getReserveTokensAddresses(address)': FunctionFragment;
     'getReserves()': FunctionFragment;
+    'getReservesList()': FunctionFragment;
     'getUserAccountData(address)': FunctionFragment;
     'getUserReserveData(address,address)': FunctionFragment;
     'initReserve(address,address,address,address,address)': FunctionFragment;
@@ -36,7 +34,6 @@ interface LendingPoolInterface extends ethers.utils.Interface {
     'liquidationCall(address,address,address,uint256,bool)': FunctionFragment;
     'rebalanceStableBorrowRate(address,address)': FunctionFragment;
     'repay(address,uint256,uint256,address)': FunctionFragment;
-    'reservesList(uint256)': FunctionFragment;
     'setConfiguration(address,uint256)': FunctionFragment;
     'setReserveInterestRateStrategyAddress(address,address)': FunctionFragment;
     'setUserUseReserveAsCollateral(address,bool)': FunctionFragment;
@@ -44,9 +41,14 @@ interface LendingPoolInterface extends ethers.utils.Interface {
     'withdraw(address,uint256)': FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: 'FLASHLOAN_FEE_TOTAL', values?: undefined): string;
   encodeFunctionData(functionFragment: 'LENDINGPOOL_REVISION', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'MAX_STABLE_RATE_BORROW_SIZE_PERCENT',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'REBALANCE_DOWN_RATE_DELTA', values?: undefined): string;
   encodeFunctionData(functionFragment: 'UINT_MAX_VALUE', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'addressesProvider', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'balanceDecreaseAllowed',
     values: [string, string, BigNumberish]
@@ -63,6 +65,7 @@ interface LendingPoolInterface extends ethers.utils.Interface {
     functionFragment: 'flashLoan',
     values: [string, string, BigNumberish, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: 'getAddressesProvider', values?: undefined): string;
   encodeFunctionData(functionFragment: 'getConfiguration', values: [string]): string;
   encodeFunctionData(functionFragment: 'getReserveConfigurationData', values: [string]): string;
   encodeFunctionData(functionFragment: 'getReserveData', values: [string]): string;
@@ -73,6 +76,7 @@ interface LendingPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'getReserveTokensAddresses', values: [string]): string;
   encodeFunctionData(functionFragment: 'getReserves', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'getReservesList', values?: undefined): string;
   encodeFunctionData(functionFragment: 'getUserAccountData', values: [string]): string;
   encodeFunctionData(functionFragment: 'getUserReserveData', values: [string, string]): string;
   encodeFunctionData(
@@ -92,7 +96,6 @@ interface LendingPoolInterface extends ethers.utils.Interface {
     functionFragment: 'repay',
     values: [string, BigNumberish, BigNumberish, string]
   ): string;
-  encodeFunctionData(functionFragment: 'reservesList', values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: 'setConfiguration', values: [string, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: 'setReserveInterestRateStrategyAddress',
@@ -108,13 +111,19 @@ interface LendingPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'withdraw', values: [string, BigNumberish]): string;
 
+  decodeFunctionResult(functionFragment: 'FLASHLOAN_FEE_TOTAL', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'LENDINGPOOL_REVISION', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'MAX_STABLE_RATE_BORROW_SIZE_PERCENT',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'REBALANCE_DOWN_RATE_DELTA', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'UINT_MAX_VALUE', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'addressesProvider', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'balanceDecreaseAllowed', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'borrow', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'flashLoan', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getAddressesProvider', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getConfiguration', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getReserveConfigurationData', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getReserveData', data: BytesLike): Result;
@@ -125,6 +134,7 @@ interface LendingPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'getReserveTokensAddresses', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getReserves', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReservesList', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getUserAccountData', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getUserReserveData', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initReserve', data: BytesLike): Result;
@@ -132,7 +142,6 @@ interface LendingPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'liquidationCall', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'rebalanceStableBorrowRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'repay', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'reservesList', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setConfiguration', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'setReserveInterestRateStrategyAddress',
@@ -143,17 +152,17 @@ interface LendingPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
 
   events: {
-    'Borrow(address,address,uint256,uint256,uint256,uint16,uint256)': EventFragment;
-    'Deposit(address,address,uint256,uint16,uint256)': EventFragment;
-    'FlashLoan(address,address,uint256,uint256,uint256,uint256)': EventFragment;
-    'LiquidationCall(address,address,address,uint256,uint256,uint256,address,bool,uint256)': EventFragment;
-    'OriginationFeeLiquidated(address,address,address,uint256,uint256,uint256)': EventFragment;
-    'RebalanceStableBorrowRate(address,address,uint256)': EventFragment;
-    'Repay(address,address,address,uint256,uint256)': EventFragment;
+    'Borrow(address,address,uint256,uint256,uint256,uint16)': EventFragment;
+    'Deposit(address,address,uint256,uint16)': EventFragment;
+    'FlashLoan(address,address,uint256,uint256)': EventFragment;
+    'LiquidationCall(address,address,address,uint256,uint256,uint256,address,bool)': EventFragment;
+    'OriginationFeeLiquidated(address,address,address,uint256,uint256)': EventFragment;
+    'RebalanceStableBorrowRate(address,address)': EventFragment;
+    'Repay(address,address,address,uint256)': EventFragment;
     'ReserveUsedAsCollateralDisabled(address,address)': EventFragment;
     'ReserveUsedAsCollateralEnabled(address,address)': EventFragment;
     'Swap(address,address,uint256)': EventFragment;
-    'Withdraw(address,address,uint256,uint256)': EventFragment;
+    'Withdraw(address,address,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Borrow'): EventFragment;
@@ -183,6 +192,18 @@ export class LendingPool extends Contract {
   interface: LendingPoolInterface;
 
   functions: {
+    FLASHLOAN_FEE_TOTAL(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    'FLASHLOAN_FEE_TOTAL()'(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     LENDINGPOOL_REVISION(
       overrides?: CallOverrides
     ): Promise<{
@@ -190,6 +211,30 @@ export class LendingPool extends Contract {
     }>;
 
     'LENDINGPOOL_REVISION()'(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()'(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    REBALANCE_DOWN_RATE_DELTA(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    'REBALANCE_DOWN_RATE_DELTA()'(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -207,98 +252,98 @@ export class LendingPool extends Contract {
       0: BigNumber;
     }>;
 
-    addressesProvider(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    'addressesProvider()'(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     balanceDecreaseAllowed(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
     'balanceDecreaseAllowed(address,address,uint256)'(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
     borrow(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'borrow(address,uint256,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     deposit(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'deposit(address,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     flashLoan(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'flashLoan(address,address,uint256,bytes)'(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    getAddressesProvider(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    'getAddressesProvider()'(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     getConfiguration(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: {data: BigNumber; 0: BigNumber};
     }>;
 
     'getConfiguration(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: {data: BigNumber; 0: BigNumber};
     }>;
 
     getReserveConfigurationData(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       decimals: BigNumber;
@@ -324,7 +369,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveConfigurationData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       decimals: BigNumber;
@@ -350,7 +395,7 @@ export class LendingPool extends Contract {
     }>;
 
     getReserveData(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       availableLiquidity: BigNumber;
@@ -376,7 +421,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       availableLiquidity: BigNumber;
@@ -402,35 +447,35 @@ export class LendingPool extends Contract {
     }>;
 
     getReserveNormalizedIncome(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
     'getReserveNormalizedIncome(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
     getReserveNormalizedVariableDebt(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
     'getReserveNormalizedVariableDebt(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
     getReserveTokensAddresses(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       aTokenAddress: string;
@@ -442,7 +487,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveTokensAddresses(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       aTokenAddress: string;
@@ -460,6 +505,18 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserves()'(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
+    getReservesList(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
+    'getReservesList()'(
       overrides?: CallOverrides
     ): Promise<{
       0: string[];
@@ -502,7 +559,7 @@ export class LendingPool extends Contract {
     }>;
 
     getUserReserveData(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -529,7 +586,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getUserReserveData(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -556,7 +613,7 @@ export class LendingPool extends Contract {
     }>;
 
     initReserve(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -565,7 +622,7 @@ export class LendingPool extends Contract {
     ): Promise<ContractTransaction>;
 
     'initReserve(address,address,address,address,address)'(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -573,218 +630,213 @@ export class LendingPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    initialize(_addressesProvider: string, overrides?: Overrides): Promise<ContractTransaction>;
+    initialize(provider: string, overrides?: Overrides): Promise<ContractTransaction>;
 
-    'initialize(address)'(
-      _addressesProvider: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    'initialize(address)'(provider: string, overrides?: Overrides): Promise<ContractTransaction>;
 
     liquidationCall(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'liquidationCall(address,address,address,uint256,bool)'(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     rebalanceStableBorrowRate(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'rebalanceStableBorrowRate(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     repay(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'repay(address,uint256,uint256,address)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    reservesList(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    'reservesList(uint256)'(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     setConfiguration(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'setConfiguration(address,uint256)'(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setReserveInterestRateStrategyAddress(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'setReserveInterestRateStrategyAddress(address,address)'(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setUserUseReserveAsCollateral(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'setUserUseReserveAsCollateral(address,bool)'(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     swapBorrowRateMode(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'swapBorrowRateMode(address,uint256)'(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     withdraw(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     'withdraw(address,uint256)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
+
+  FLASHLOAN_FEE_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
+
+  'FLASHLOAN_FEE_TOTAL()'(overrides?: CallOverrides): Promise<BigNumber>;
 
   LENDINGPOOL_REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
   'LENDINGPOOL_REVISION()'(overrides?: CallOverrides): Promise<BigNumber>;
 
+  MAX_STABLE_RATE_BORROW_SIZE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()'(overrides?: CallOverrides): Promise<BigNumber>;
+
+  REBALANCE_DOWN_RATE_DELTA(overrides?: CallOverrides): Promise<BigNumber>;
+
+  'REBALANCE_DOWN_RATE_DELTA()'(overrides?: CallOverrides): Promise<BigNumber>;
+
   UINT_MAX_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
   'UINT_MAX_VALUE()'(overrides?: CallOverrides): Promise<BigNumber>;
 
-  addressesProvider(overrides?: CallOverrides): Promise<string>;
-
-  'addressesProvider()'(overrides?: CallOverrides): Promise<string>;
-
   balanceDecreaseAllowed(
-    _reserve: string,
-    _user: string,
-    _amount: BigNumberish,
+    asset: string,
+    user: string,
+    amount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   'balanceDecreaseAllowed(address,address,uint256)'(
-    _reserve: string,
-    _user: string,
-    _amount: BigNumberish,
+    asset: string,
+    user: string,
+    amount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   borrow(
-    _reserve: string,
-    _amount: BigNumberish,
-    _interestRateMode: BigNumberish,
-    _referralCode: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
+    interestRateMode: BigNumberish,
+    referralCode: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'borrow(address,uint256,uint256,uint16)'(
-    _reserve: string,
-    _amount: BigNumberish,
-    _interestRateMode: BigNumberish,
-    _referralCode: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
+    interestRateMode: BigNumberish,
+    referralCode: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   deposit(
-    _reserve: string,
-    _amount: BigNumberish,
-    _referralCode: BigNumberish,
-    overrides?: PayableOverrides
+    asset: string,
+    amount: BigNumberish,
+    referralCode: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'deposit(address,uint256,uint16)'(
-    _reserve: string,
-    _amount: BigNumberish,
-    _referralCode: BigNumberish,
-    overrides?: PayableOverrides
+    asset: string,
+    amount: BigNumberish,
+    referralCode: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   flashLoan(
-    _receiver: string,
-    _reserve: string,
-    _amount: BigNumberish,
-    _params: BytesLike,
+    receiverAddress: string,
+    asset: string,
+    amount: BigNumberish,
+    params: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'flashLoan(address,address,uint256,bytes)'(
-    _receiver: string,
-    _reserve: string,
-    _amount: BigNumberish,
-    _params: BytesLike,
+    receiverAddress: string,
+    asset: string,
+    amount: BigNumberish,
+    params: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getAddressesProvider(overrides?: CallOverrides): Promise<string>;
+
+  'getAddressesProvider()'(overrides?: CallOverrides): Promise<string>;
+
   getConfiguration(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{data: BigNumber; 0: BigNumber}>;
 
   'getConfiguration(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{data: BigNumber; 0: BigNumber}>;
 
   getReserveConfigurationData(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     decimals: BigNumber;
@@ -810,7 +862,7 @@ export class LendingPool extends Contract {
   }>;
 
   'getReserveConfigurationData(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     decimals: BigNumber;
@@ -836,7 +888,7 @@ export class LendingPool extends Contract {
   }>;
 
   getReserveData(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     availableLiquidity: BigNumber;
@@ -862,7 +914,7 @@ export class LendingPool extends Contract {
   }>;
 
   'getReserveData(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     availableLiquidity: BigNumber;
@@ -887,22 +939,22 @@ export class LendingPool extends Contract {
     9: number;
   }>;
 
-  getReserveNormalizedIncome(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+  getReserveNormalizedIncome(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   'getReserveNormalizedIncome(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getReserveNormalizedVariableDebt(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+  getReserveNormalizedVariableDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   'getReserveNormalizedVariableDebt(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getReserveTokensAddresses(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     aTokenAddress: string;
@@ -914,7 +966,7 @@ export class LendingPool extends Contract {
   }>;
 
   'getReserveTokensAddresses(address)'(
-    _reserve: string,
+    asset: string,
     overrides?: CallOverrides
   ): Promise<{
     aTokenAddress: string;
@@ -928,6 +980,10 @@ export class LendingPool extends Contract {
   getReserves(overrides?: CallOverrides): Promise<string[]>;
 
   'getReserves()'(overrides?: CallOverrides): Promise<string[]>;
+
+  getReservesList(overrides?: CallOverrides): Promise<string[]>;
+
+  'getReservesList()'(overrides?: CallOverrides): Promise<string[]>;
 
   getUserAccountData(
     _user: string,
@@ -966,7 +1022,7 @@ export class LendingPool extends Contract {
   }>;
 
   getUserReserveData(
-    _reserve: string,
+    asset: string,
     _user: string,
     overrides?: CallOverrides
   ): Promise<{
@@ -993,7 +1049,7 @@ export class LendingPool extends Contract {
   }>;
 
   'getUserReserveData(address,address)'(
-    _reserve: string,
+    asset: string,
     _user: string,
     overrides?: CallOverrides
   ): Promise<{
@@ -1020,7 +1076,7 @@ export class LendingPool extends Contract {
   }>;
 
   initReserve(
-    _reserve: string,
+    asset: string,
     _aTokenAddress: string,
     _stableDebtAddress: string,
     _variableDebtAddress: string,
@@ -1029,7 +1085,7 @@ export class LendingPool extends Contract {
   ): Promise<ContractTransaction>;
 
   'initReserve(address,address,address,address,address)'(
-    _reserve: string,
+    asset: string,
     _aTokenAddress: string,
     _stableDebtAddress: string,
     _variableDebtAddress: string,
@@ -1037,208 +1093,213 @@ export class LendingPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  initialize(_addressesProvider: string, overrides?: Overrides): Promise<ContractTransaction>;
+  initialize(provider: string, overrides?: Overrides): Promise<ContractTransaction>;
 
-  'initialize(address)'(
-    _addressesProvider: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  'initialize(address)'(provider: string, overrides?: Overrides): Promise<ContractTransaction>;
 
   liquidationCall(
     _collateral: string,
-    _reserve: string,
+    asset: string,
     _user: string,
     _purchaseAmount: BigNumberish,
     _receiveAToken: boolean,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'liquidationCall(address,address,address,uint256,bool)'(
     _collateral: string,
-    _reserve: string,
+    asset: string,
     _user: string,
     _purchaseAmount: BigNumberish,
     _receiveAToken: boolean,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   rebalanceStableBorrowRate(
-    _reserve: string,
+    asset: string,
     _user: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'rebalanceStableBorrowRate(address,address)'(
-    _reserve: string,
+    asset: string,
     _user: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   repay(
-    _reserve: string,
-    _amount: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
     _rateMode: BigNumberish,
     _onBehalfOf: string,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'repay(address,uint256,uint256,address)'(
-    _reserve: string,
-    _amount: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
     _rateMode: BigNumberish,
     _onBehalfOf: string,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  reservesList(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  'reservesList(uint256)'(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
   setConfiguration(
-    _reserve: string,
-    _configuration: BigNumberish,
+    asset: string,
+    configuration: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'setConfiguration(address,uint256)'(
-    _reserve: string,
-    _configuration: BigNumberish,
+    asset: string,
+    configuration: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setReserveInterestRateStrategyAddress(
-    _reserve: string,
-    _rateStrategyAddress: string,
+    asset: string,
+    rateStrategyAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'setReserveInterestRateStrategyAddress(address,address)'(
-    _reserve: string,
-    _rateStrategyAddress: string,
+    asset: string,
+    rateStrategyAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setUserUseReserveAsCollateral(
-    _reserve: string,
+    asset: string,
     _useAsCollateral: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'setUserUseReserveAsCollateral(address,bool)'(
-    _reserve: string,
+    asset: string,
     _useAsCollateral: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   swapBorrowRateMode(
-    _reserve: string,
+    asset: string,
     _rateMode: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'swapBorrowRateMode(address,uint256)'(
-    _reserve: string,
+    asset: string,
     _rateMode: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   withdraw(
-    _reserve: string,
-    _amount: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   'withdraw(address,uint256)'(
-    _reserve: string,
-    _amount: BigNumberish,
+    asset: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    FLASHLOAN_FEE_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'FLASHLOAN_FEE_TOTAL()'(overrides?: CallOverrides): Promise<BigNumber>;
+
     LENDINGPOOL_REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
     'LENDINGPOOL_REVISION()'(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()'(overrides?: CallOverrides): Promise<BigNumber>;
+
+    REBALANCE_DOWN_RATE_DELTA(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'REBALANCE_DOWN_RATE_DELTA()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     UINT_MAX_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
     'UINT_MAX_VALUE()'(overrides?: CallOverrides): Promise<BigNumber>;
 
-    addressesProvider(overrides?: CallOverrides): Promise<string>;
-
-    'addressesProvider()'(overrides?: CallOverrides): Promise<string>;
-
     balanceDecreaseAllowed(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     'balanceDecreaseAllowed(address,address,uint256)'(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     borrow(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'borrow(address,uint256,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     deposit(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'deposit(address,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     flashLoan(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'flashLoan(address,address,uint256,bytes)'(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getAddressesProvider(overrides?: CallOverrides): Promise<string>;
+
+    'getAddressesProvider()'(overrides?: CallOverrides): Promise<string>;
+
     getConfiguration(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{data: BigNumber; 0: BigNumber}>;
 
     'getConfiguration(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{data: BigNumber; 0: BigNumber}>;
 
     getReserveConfigurationData(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       decimals: BigNumber;
@@ -1264,7 +1325,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveConfigurationData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       decimals: BigNumber;
@@ -1290,7 +1351,7 @@ export class LendingPool extends Contract {
     }>;
 
     getReserveData(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       availableLiquidity: BigNumber;
@@ -1316,7 +1377,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       availableLiquidity: BigNumber;
@@ -1341,25 +1402,22 @@ export class LendingPool extends Contract {
       9: number;
     }>;
 
-    getReserveNormalizedIncome(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getReserveNormalizedIncome(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveNormalizedIncome(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getReserveNormalizedVariableDebt(
-      _reserve: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getReserveNormalizedVariableDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveNormalizedVariableDebt(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getReserveTokensAddresses(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       aTokenAddress: string;
@@ -1371,7 +1429,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getReserveTokensAddresses(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<{
       aTokenAddress: string;
@@ -1385,6 +1443,10 @@ export class LendingPool extends Contract {
     getReserves(overrides?: CallOverrides): Promise<string[]>;
 
     'getReserves()'(overrides?: CallOverrides): Promise<string[]>;
+
+    getReservesList(overrides?: CallOverrides): Promise<string[]>;
+
+    'getReservesList()'(overrides?: CallOverrides): Promise<string[]>;
 
     getUserAccountData(
       _user: string,
@@ -1423,7 +1485,7 @@ export class LendingPool extends Contract {
     }>;
 
     getUserReserveData(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -1450,7 +1512,7 @@ export class LendingPool extends Contract {
     }>;
 
     'getUserReserveData(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -1477,7 +1539,7 @@ export class LendingPool extends Contract {
     }>;
 
     initReserve(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -1486,7 +1548,7 @@ export class LendingPool extends Contract {
     ): Promise<void>;
 
     'initReserve(address,address,address,address,address)'(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -1494,13 +1556,13 @@ export class LendingPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    initialize(_addressesProvider: string, overrides?: CallOverrides): Promise<void>;
+    initialize(provider: string, overrides?: CallOverrides): Promise<void>;
 
-    'initialize(address)'(_addressesProvider: string, overrides?: CallOverrides): Promise<void>;
+    'initialize(address)'(provider: string, overrides?: CallOverrides): Promise<void>;
 
     liquidationCall(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
@@ -1509,7 +1571,7 @@ export class LendingPool extends Contract {
 
     'liquidationCall(address,address,address,uint256,bool)'(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
@@ -1517,280 +1579,269 @@ export class LendingPool extends Contract {
     ): Promise<void>;
 
     rebalanceStableBorrowRate(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'rebalanceStableBorrowRate(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     repay(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'repay(address,uint256,uint256,address)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    reservesList(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    'reservesList(uint256)'(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
     setConfiguration(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'setConfiguration(address,uint256)'(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setReserveInterestRateStrategyAddress(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'setReserveInterestRateStrategyAddress(address,address)'(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setUserUseReserveAsCollateral(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'setUserUseReserveAsCollateral(address,bool)'(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
     swapBorrowRateMode(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     'swapBorrowRateMode(address,uint256)'(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    withdraw(_reserve: string, _amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    withdraw(asset: string, amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     'withdraw(address,uint256)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
     Borrow(
-      _reserve: string | null,
-      _user: string | null,
-      _amount: null,
-      _borrowRateMode: null,
-      _borrowRate: null,
-      _referral: BigNumberish | null,
-      _timestamp: null
+      reserve: string | null,
+      user: string | null,
+      amount: null,
+      borrowRateMode: null,
+      borrowRate: null,
+      referral: BigNumberish | null
     ): EventFilter;
 
     Deposit(
-      _reserve: string | null,
-      _user: string | null,
-      _amount: null,
-      _referral: BigNumberish | null,
-      _timestamp: null
+      reserve: string | null,
+      user: string | null,
+      amount: null,
+      referral: BigNumberish | null
     ): EventFilter;
 
     FlashLoan(
-      _target: string | null,
-      _reserve: string | null,
-      _amount: null,
-      _totalFee: null,
-      _protocolFee: null,
-      _timestamp: null
+      target: string | null,
+      reserve: string | null,
+      amount: null,
+      totalFee: null
     ): EventFilter;
 
     LiquidationCall(
-      _collateral: string | null,
-      _reserve: string | null,
-      _user: string | null,
-      _purchaseAmount: null,
-      _liquidatedCollateralAmount: null,
-      _accruedBorrowInterest: null,
-      _liquidator: null,
-      _receiveAToken: null,
-      _timestamp: null
+      collateral: string | null,
+      reserve: string | null,
+      user: string | null,
+      purchaseAmount: null,
+      liquidatedCollateralAmount: null,
+      accruedBorrowInterest: null,
+      liquidator: null,
+      receiveAToken: null
     ): EventFilter;
 
     OriginationFeeLiquidated(
-      _collateral: string | null,
-      _reserve: string | null,
-      _user: string | null,
-      _feeLiquidated: null,
-      _liquidatedCollateralForFee: null,
-      _timestamp: null
+      collateral: string | null,
+      reserve: string | null,
+      user: string | null,
+      feeLiquidated: null,
+      liquidatedCollateralForFee: null
     ): EventFilter;
 
-    RebalanceStableBorrowRate(
-      _reserve: string | null,
-      _user: string | null,
-      _timestamp: null
-    ): EventFilter;
+    RebalanceStableBorrowRate(reserve: string | null, user: string | null): EventFilter;
 
     Repay(
-      _reserve: string | null,
-      _user: string | null,
-      _repayer: string | null,
-      _amount: null,
-      _timestamp: null
+      reserve: string | null,
+      user: string | null,
+      repayer: string | null,
+      amount: null
     ): EventFilter;
 
-    ReserveUsedAsCollateralDisabled(_reserve: string | null, _user: string | null): EventFilter;
+    ReserveUsedAsCollateralDisabled(reserve: string | null, user: string | null): EventFilter;
 
-    ReserveUsedAsCollateralEnabled(_reserve: string | null, _user: string | null): EventFilter;
+    ReserveUsedAsCollateralEnabled(reserve: string | null, user: string | null): EventFilter;
 
-    Swap(_reserve: string | null, _user: string | null, _timestamp: null): EventFilter;
+    Swap(reserve: string | null, user: string | null, timestamp: null): EventFilter;
 
-    Withdraw(
-      _reserve: string | null,
-      _user: string | null,
-      _amount: null,
-      _timestamp: null
-    ): EventFilter;
+    Withdraw(reserve: string | null, user: string | null, amount: null): EventFilter;
   };
 
   estimateGas: {
+    FLASHLOAN_FEE_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'FLASHLOAN_FEE_TOTAL()'(overrides?: CallOverrides): Promise<BigNumber>;
+
     LENDINGPOOL_REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
     'LENDINGPOOL_REVISION()'(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()'(overrides?: CallOverrides): Promise<BigNumber>;
+
+    REBALANCE_DOWN_RATE_DELTA(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'REBALANCE_DOWN_RATE_DELTA()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     UINT_MAX_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
     'UINT_MAX_VALUE()'(overrides?: CallOverrides): Promise<BigNumber>;
 
-    addressesProvider(overrides?: CallOverrides): Promise<BigNumber>;
-
-    'addressesProvider()'(overrides?: CallOverrides): Promise<BigNumber>;
-
     balanceDecreaseAllowed(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     'balanceDecreaseAllowed(address,address,uint256)'(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     borrow(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'borrow(address,uint256,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     deposit(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     'deposit(address,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     flashLoan(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'flashLoan(address,address,uint256,bytes)'(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    getConfiguration(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getAddressesProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'getConfiguration(address)'(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    'getAddressesProvider()'(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserveConfigurationData(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getConfiguration(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    'getConfiguration(address)'(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveConfigurationData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveConfigurationData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getReserveData(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getReserveData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    'getReserveData(address)'(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    'getReserveData(address)'(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserveNormalizedIncome(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getReserveNormalizedIncome(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveNormalizedIncome(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getReserveNormalizedVariableDebt(
-      _reserve: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getReserveNormalizedVariableDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveNormalizedVariableDebt(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getReserveTokensAddresses(_reserve: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getReserveTokensAddresses(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getReserveTokensAddresses(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1798,24 +1849,24 @@ export class LendingPool extends Contract {
 
     'getReserves()'(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getReservesList(overrides?: CallOverrides): Promise<BigNumber>;
+
+    'getReservesList()'(overrides?: CallOverrides): Promise<BigNumber>;
+
     getUserAccountData(_user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getUserAccountData(address)'(_user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getUserReserveData(
-      _reserve: string,
-      _user: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getUserReserveData(asset: string, _user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     'getUserReserveData(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     initReserve(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -1824,7 +1875,7 @@ export class LendingPool extends Contract {
     ): Promise<BigNumber>;
 
     'initReserve(address,address,address,address,address)'(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -1832,247 +1883,261 @@ export class LendingPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    initialize(_addressesProvider: string, overrides?: Overrides): Promise<BigNumber>;
+    initialize(provider: string, overrides?: Overrides): Promise<BigNumber>;
 
-    'initialize(address)'(_addressesProvider: string, overrides?: Overrides): Promise<BigNumber>;
+    'initialize(address)'(provider: string, overrides?: Overrides): Promise<BigNumber>;
 
     liquidationCall(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     'liquidationCall(address,address,address,uint256,bool)'(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     rebalanceStableBorrowRate(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'rebalanceStableBorrowRate(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     repay(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     'repay(address,uint256,uint256,address)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    reservesList(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    'reservesList(uint256)'(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
     setConfiguration(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'setConfiguration(address,uint256)'(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     setReserveInterestRateStrategyAddress(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'setReserveInterestRateStrategyAddress(address,address)'(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     setUserUseReserveAsCollateral(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'setUserUseReserveAsCollateral(address,bool)'(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     swapBorrowRateMode(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     'swapBorrowRateMode(address,uint256)'(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    withdraw(_reserve: string, _amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+    withdraw(asset: string, amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     'withdraw(address,uint256)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    FLASHLOAN_FEE_TOTAL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    'FLASHLOAN_FEE_TOTAL()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     LENDINGPOOL_REVISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'LENDINGPOOL_REVISION()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()'(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    REBALANCE_DOWN_RATE_DELTA(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    'REBALANCE_DOWN_RATE_DELTA()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     UINT_MAX_VALUE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'UINT_MAX_VALUE()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    addressesProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    'addressesProvider()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     balanceDecreaseAllowed(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'balanceDecreaseAllowed(address,address,uint256)'(
-      _reserve: string,
-      _user: string,
-      _amount: BigNumberish,
+      asset: string,
+      user: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     borrow(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'borrow(address,uint256,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _interestRateMode: BigNumberish,
-      _referralCode: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     deposit(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'deposit(address,uint256,uint16)'(
-      _reserve: string,
-      _amount: BigNumberish,
-      _referralCode: BigNumberish,
-      overrides?: PayableOverrides
+      asset: string,
+      amount: BigNumberish,
+      referralCode: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     flashLoan(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'flashLoan(address,address,uint256,bytes)'(
-      _receiver: string,
-      _reserve: string,
-      _amount: BigNumberish,
-      _params: BytesLike,
+      receiverAddress: string,
+      asset: string,
+      amount: BigNumberish,
+      params: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    getConfiguration(_reserve: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getAddressesProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    'getAddressesProvider()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getConfiguration(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'getConfiguration(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReserveConfigurationData(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'getReserveConfigurationData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getReserveData(_reserve: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getReserveData(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'getReserveData(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReserveNormalizedIncome(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'getReserveNormalizedIncome(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReserveNormalizedVariableDebt(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'getReserveNormalizedVariableDebt(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReserveTokensAddresses(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'getReserveTokensAddresses(address)'(
-      _reserve: string,
+      asset: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReserves(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'getReserves()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReservesList(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    'getReservesList()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUserAccountData(_user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2082,19 +2147,19 @@ export class LendingPool extends Contract {
     ): Promise<PopulatedTransaction>;
 
     getUserReserveData(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'getUserReserveData(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     initReserve(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -2103,7 +2168,7 @@ export class LendingPool extends Contract {
     ): Promise<PopulatedTransaction>;
 
     'initReserve(address,address,address,address,address)'(
-      _reserve: string,
+      asset: string,
       _aTokenAddress: string,
       _stableDebtAddress: string,
       _variableDebtAddress: string,
@@ -2111,123 +2176,113 @@ export class LendingPool extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    initialize(_addressesProvider: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    initialize(provider: string, overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    'initialize(address)'(
-      _addressesProvider: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
+    'initialize(address)'(provider: string, overrides?: Overrides): Promise<PopulatedTransaction>;
 
     liquidationCall(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'liquidationCall(address,address,address,uint256,bool)'(
       _collateral: string,
-      _reserve: string,
+      asset: string,
       _user: string,
       _purchaseAmount: BigNumberish,
       _receiveAToken: boolean,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     rebalanceStableBorrowRate(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'rebalanceStableBorrowRate(address,address)'(
-      _reserve: string,
+      asset: string,
       _user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     repay(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'repay(address,uint256,uint256,address)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       _rateMode: BigNumberish,
       _onBehalfOf: string,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    reservesList(arg0: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    'reservesList(uint256)'(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setConfiguration(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'setConfiguration(address,uint256)'(
-      _reserve: string,
-      _configuration: BigNumberish,
+      asset: string,
+      configuration: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setReserveInterestRateStrategyAddress(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'setReserveInterestRateStrategyAddress(address,address)'(
-      _reserve: string,
-      _rateStrategyAddress: string,
+      asset: string,
+      rateStrategyAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setUserUseReserveAsCollateral(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'setUserUseReserveAsCollateral(address,bool)'(
-      _reserve: string,
+      asset: string,
       _useAsCollateral: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     swapBorrowRateMode(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'swapBorrowRateMode(address,uint256)'(
-      _reserve: string,
+      asset: string,
       _rateMode: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     withdraw(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     'withdraw(address,uint256)'(
-      _reserve: string,
-      _amount: BigNumberish,
+      asset: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

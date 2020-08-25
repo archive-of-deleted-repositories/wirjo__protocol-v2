@@ -17,22 +17,22 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '_pool',
+        name: 'pool',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: '_underlyingAssetAddress',
+        name: 'underlyingAssetAddress',
         type: 'address',
       },
       {
         internalType: 'string',
-        name: '_name',
+        name: 'name',
         type: 'string',
       },
       {
         internalType: 'string',
-        name: '_symbol',
+        name: 'symbol',
         type: 'string',
       },
     ],
@@ -122,7 +122,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: '_amount',
+        name: 'amount',
         type: 'uint256',
       },
     ],
@@ -141,7 +141,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '_user',
+        name: 'user',
         type: 'address',
       },
     ],
@@ -221,17 +221,17 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint8',
-        name: '_decimals',
+        name: 'decimals',
         type: 'uint8',
       },
       {
         internalType: 'string',
-        name: '_name',
+        name: 'name',
         type: 'string',
       },
       {
         internalType: 'string',
-        name: '_symbol',
+        name: 'symbol',
         type: 'string',
       },
     ],
@@ -257,7 +257,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '_user',
+        name: 'user',
         type: 'address',
       },
     ],
@@ -307,7 +307,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: '_amount',
+        name: 'amount',
         type: 'uint256',
       },
     ],
@@ -336,7 +336,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: '_amount',
+        name: 'amount',
         type: 'uint256',
       },
     ],
